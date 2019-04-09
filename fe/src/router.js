@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import Home from './views/User.vue'
+import User from './views/User.vue'
+import Test from './views/Test.vue'
 
 Vue.use(Router)
 
@@ -25,12 +26,19 @@ export default new Router({
     {
       path: '/user',
       name: 'user',
-      component: () => import(/* webpackChunkName: "about" */ './views/User.vue')
+      //component: () => import(/* webpackChunkName: "about" */ './views/User.vue')
+      component: User
     },
     {
-      path: '/crud',
-      name: 'crud',
-      component: () => import(/* webpackChunkName: "about" */ './views/CRUD.vue')
+      path: '/test',
+      name: 'test',
+      //component: () => import(/* webpackChunkName: "about" */ './views/Test.vue')
+      component: Test
+    },
+    {
+      path: '*',
+      name: 'error404',
+      component: () => import('./views/Error404.vue')
     }
   ]
 })
