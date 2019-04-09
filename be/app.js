@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors') // 상단 아무곳이나 추가
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -46,6 +47,7 @@ app.use(express.static(path.join(__dirname, '../', 'fe', 'dist')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use(cors()) // api 위에서 사용하겠다고 선언
 app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler

@@ -89,9 +89,9 @@ const user = [
 // Read(또는 Retrieve)	읽기(또는 인출)	SELECT	GET
 router.get('/', function(req, res, next) {
   console.log(req.params);
-  console.log(req.qurey);
+  console.log(req.query);
   console.log(req.body);
-  res.send({ users: us });
+  res.send({success: true,  users: user , params: req.params, query: req.query, body: req.body});
 
 });
 
@@ -101,7 +101,7 @@ router.post('/', function(req, res, next) {
   console.log(req.query);
   console.log(req.body);
 
-  res.send({ success: true, msg: 'post ok' });
+  res.send({ success: true, msg: 'post ok' , params: req.params, query: req.query, body: req.body });
 });
 
 // Update	갱신	UPDATE	PUT
@@ -109,7 +109,7 @@ router.put('/', function(req, res, next) {
   console.log(req.params);
   console.log(req.query);
   console.log(req.body);
-  res.send({ success: true, msg: 'put ok' });
+  res.send({ success: true, msg: 'put ok' , params: req.params, query: req.query, body: req.body });
 });
 
 // Delete(또는 Destroy)	삭제(또는 파괴)	DELETE	DELETE
@@ -118,7 +118,7 @@ router.delete('/', function(req, res, next) {
   console.log(req.query);
   console.log(req.body);
 
-  res.send({ success: true, msg: 'del ok' });
+  res.send({ success: true, msg: 'del ok' , params: req.params, query: req.query, body: req.body });
 });
 
 router.all('*', function(req, res, next) {

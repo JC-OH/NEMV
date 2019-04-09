@@ -2,10 +2,19 @@
 <v-container fluid grid-list-md>
   <!--row: Sets flex direction to row-->
   <!--wrap: Allows children to wrap within the container if the elements use more than 100%. / 요소가 100 % 이상을 사용하는 경우 컨테이너에서 래핑 할 수 있습니다.-->
+<v-layout row wrap>
+
+    <v-textarea
+      auto-grow
+
+      name="breakpoint"
+      v-model=" breakpoint "
+    ></v-textarea>
+</v-layout>
  <v-layout row wrap>
    <!--[S] CRUD -->
    <v-flex xs12 sm6 md4 lg3 xl1>
-     <v-card>
+     <v-card height="100%">
        <v-card-title primary-title>
          <div>
            <!-- <h3>Kangaroo Valley Safari</h3> -->
@@ -33,7 +42,7 @@
 
      <!--[S] CRUD -->
      <v-flex xs12 sm6 md4 lg3 xl1>
-       <v-card>
+       <v-card height="100%">
          <v-card-title primary-title>
            <div>
              <!-- <h3>Kangaroo Valley Safari</h3> -->
@@ -62,7 +71,7 @@
 
     <!--[S] CRUD -->
     <v-flex xs12 sm6 md4 lg3 xl1>
-     <v-card>
+     <v-card height="100%">
        <v-card-title primary-title>
          <div>
            <!-- <h3>Kangaroo Valley Safari</h3> -->
@@ -82,7 +91,17 @@
        <v-card-actions>
          <!--flat: Removes card box shadow-->
           <v-btn flat color="orange" @click="putReq">submit</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="show = !show">
+            <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+          </v-btn>
        </v-card-actions>
+
+       <v-slide-y-transition>
+           <v-card-text v-show="show">
+             I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+           </v-card-text>
+         </v-slide-y-transition>
      </v-card>
 
     </v-flex>
@@ -90,7 +109,7 @@
 
      <!--[S] CRUD -->
      <v-flex xs12 sm6 md4 lg3 xl1>
-       <v-card>
+       <v-card height="100%">
          <v-card-title primary-title>
            <div>
              <!-- <h3>Kangaroo Valley Safari</h3> -->
@@ -128,6 +147,8 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      show: false,
+      breakpoint: "",
       users: [],
       getMd: '',
       postMd: '',
@@ -136,10 +157,11 @@ export default {
     }
   },
   mounted () {
+    this.breakpoint = JSON.stringify(this.$vuetify.breakpoint);
   },
   methods: {
     getReq() {
-      axios.get('/api/user', {
+      axios.get('http://localhost:3000/api/crud', {
         user: "getMan"
       }).then((res) => {
         this.getMd = JSON.stringify(res.data);
@@ -148,7 +170,7 @@ export default {
       })
     },
     postReq() {
-      axios.post('/api/user', {
+      axios.post('http://localhost:3000/api/crud', {
         user: "postMan"
       }).then((res) => {
         this.postMd = JSON.stringify(res.data);
@@ -157,7 +179,7 @@ export default {
       })
     },
     putReq() {
-      axios.put('/api/user', {
+      axios.put('http://localhost:3000/api/crud', {
         user: "putMan"
       }).then((res) => {
         this.putMd = JSON.stringify(res.data);
@@ -166,7 +188,7 @@ export default {
       })
     },
     delReq() {
-      axios.delete('/api/user', {
+      axios.delete('http://localhost:3000/api/crud', {
         user: "delMan"
       }).then((res) => {
         this.delMd = JSON.stringify(res.data);
