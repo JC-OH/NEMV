@@ -1,0 +1,13 @@
+{
+  "name": "nemv",
+  "version": "0.0.1",
+  "scripts": {
+    "serve": "cd fe & npm run serve",
+    "build": "cd fe & npm run build",
+    "development": "SET NODE_ENV=development & node ./be/bin/www",
+    "production": "SET NODE_ENV=production & SET PORT=8022 & node ./be/bin/www",
+    "dev": "SET NODE_ENV=development & node ./be/bin/www",
+    "pr": "SET NODE_ENV=production & SET PORT=8022 & node ./be/bin/www"
+  },
+  "dependencies": {}
+}

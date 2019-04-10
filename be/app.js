@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors') // 상단 아무곳이나 추가
+var favicon = require('serve-favicon');
+var history = require('connect-history-api-fallback');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -42,13 +44,17 @@ mongoose.connect('mongodb://localhost:27017/nemv', {useNewUrlParser: true}, (err
 
 });
 
-//app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, '../', 'fe', 'dist')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use(cors()) // api 위에서 사용하겠다고 선언
+if (process.env.NODE_ENV != 'production') app.use(cors()) // api 위에서 사용하겠다고 선언
+
+//app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/api', apiRouter);
+app.use(history());
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(express.static(path.join(__dirname, '../', 'fe', 'dist')));
+//app.use('/', indexRouter);
+//app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
