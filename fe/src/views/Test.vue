@@ -161,7 +161,7 @@ export default {
   },
   methods: {
     getReq() {
-      axios.get(`${this.$apiRootPath}api/crud`, {
+      axios.get(`${this.$apiRootPath}crud`, {
         user: "getMan"
       }).then((res) => {
         this.getMd = JSON.stringify(res.data);
@@ -170,7 +170,7 @@ export default {
       })
     },
     postReq() {
-      axios.post(`${this.$apiRootPath}api/crud`, {
+      axios.post(`${this.$apiRootPath}crud`, {
         user: "postMan"
       }).then((res) => {
         this.postMd = JSON.stringify(res.data);
@@ -179,7 +179,7 @@ export default {
       })
     },
     putReq() {
-      axios.put(`${this.$apiRootPath}api/crud`, {
+      axios.put(`${this.$apiRootPath}crud`, {
         user: "putMan"
       }).then((res) => {
         this.putMd = JSON.stringify(res.data);
@@ -188,7 +188,7 @@ export default {
       })
     },
     delReq() {
-      axios.delete(`${this.$apiRootPath}api/crud`, {
+      axios.delete(`${this.$apiRootPath}crud`, {
         user: "delMan"
       }).then((res) => {
         this.delMd = JSON.stringify(res.data);

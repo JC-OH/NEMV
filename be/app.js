@@ -1,3 +1,6 @@
+//---------------------------------------------------
+// Packages
+//---------------------------------------------------
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -6,13 +9,24 @@ var logger = require('morgan');
 var cors = require('cors') // 상단 아무곳이나 추가
 var favicon = require('serve-favicon');
 var history = require('connect-history-api-fallback');
+var mongoose = require('mongoose');
 
+//---------------------------------------------------
+// Config
+//---------------------------------------------------
+var cfg = require('../config')
+//---------------------------------------------------
+// Models
+//---------------------------------------------------
+var User = require('./models/users');
+
+//---------------------------------------------------
+// Routers
+//---------------------------------------------------
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 
-const mongoose = require('mongoose')
-const User = require('./models/users')
 
 var app = express();
 
@@ -25,7 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-mongoose.connect('mongodb://localhost:27017/nemv', {useNewUrlParser: true}, (err)=> {
+mongoose.connect(cfg.dbUrl, {useNewUrlParser: true}, (err)=> {
   if (err) return console.log(err);
   // console.log("mongoose connected!");
   // Creating User('Ji cheol')
