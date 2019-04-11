@@ -36,6 +36,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "signin" */ './views/Signin.vue')
     },
     {
+      path: '/block',
+      name: 'block',
+      component: () => import(/* webpackChunkName: "block" */ './views/Block.vue')
+    },
+    {
       path: '/test/',
       name: 'test',
       component: Test,
@@ -54,6 +59,23 @@ export default new Router({
                     path: 'header',
                     name: 'header',
                     component: () => import(/* webpackChunkName: "test-header" */ './views/test/Header.vue'),
+                    // beforeEnter: authCheck
+                    beforeEnter: (to, from, next) => {
+                      // /header에만 beforeEnter를 주고 to, from을 찍어보면 path을 찍어 볼 수 있습니다.
+                      console.log(to);
+                      console.log(from);
+                      // next()가 없으면 진입이 안되니 주의하셔야 합니다.
+                      // next(false) : 페이지로 진입이 안됩니다. (next() 없는 것과 동일 효과인듯 합니다.)
+                      // next(‘/e404’) : /header로 안가고 다른페이지로 넘길 수 있습니다.
+                      //next(false)
+
+                      // 이제 토큰이 없으면 차단페이지가 열리게 됩니다.
+                      // []토큰 유무만 가지고 보안이 될까?]
+                      //  => 절대 안됩니다. 크롬 개발자모드에서 Application중 LocalStorage 부분의 값을 추가하면 끝입니다.
+                      //  => 페이지 이동시 서버와 교신후에 beforeEnter로 들어가도록 해야합니다.
+                      if (!localStorage.getItem('token')) return next('block');
+                      next()
+                    }
                   }
 
                 ]

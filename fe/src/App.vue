@@ -72,6 +72,23 @@
     <v-toolbar color="indigo" dark fixed app>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>Application</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-menu bottom left>
+          <v-btn icon slot="activator">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile @click="$router.push('sign')">
+              <v-list-tile-title>로그인</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile @click="signOut">
+              <v-list-tile-title>로그아웃</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </v-toolbar-items>
+
     </v-toolbar>
      <!--
      ----------------------------------------------------------------------------------
@@ -145,11 +162,19 @@ export default {
             title: 'Test',
             items: [
               { title: 'CRUD', action: 'work_outline', link:"/Test" },
-              { title: 'User', action: 'person', link:"/Test/User" }
+              { title: 'User', action: 'person', link:"/Test/User" },
+              { title: 'Header', action: 'info', link:"/Test/Header" }
             ]
           }
         ]
 
+    }
+  },
+  methods: {
+    signOut() {
+      // 로그아웃(signOut)함수에서 토큰을 지워버리고 로그인 페이지로 보냅니다.
+      localStorage.removeItem('token');
+      this.$router.push('/');
     }
   }
 }
