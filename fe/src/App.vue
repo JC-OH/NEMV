@@ -79,7 +79,7 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile v-if="!$store.state.token" @click="$router.push('sign')">
+            <v-list-tile v-if="!$store.state.token" @click="$router.push('signin')">
               <v-list-tile-title>로그인</v-list-tile-title>
             </v-list-tile>
             <v-list-tile v-else @click="signOut">
@@ -173,7 +173,9 @@ export default {
   methods: {
     signOut() {
       // 로그아웃(signOut)함수에서 토큰을 지워버리고 로그인 페이지로 보냅니다.
-      localStorage.removeItem('token');
+
+      //localStorage.removeItem('token');
+      this.$store.commit('delToken');
       this.$router.push('/');
     }
   }
