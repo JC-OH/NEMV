@@ -59,8 +59,7 @@ router.delete('/:id', (req, res, next) => {
     })
 });
 
-router.all('*', function(req, res, next) {
-  next(createError(404, '그런 api 없어'));
-});
+
+router.all('*', require('../notFound'));
 
 module.exports = router;

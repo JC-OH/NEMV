@@ -121,8 +121,10 @@ router.delete('/', function(req, res, next) {
   res.send({ success: true, msg: 'del ok' , params: req.params, query: req.query, body: req.body });
 });
 
-router.all('*', function(req, res, next) {
-  next(createError(404, '그런 api 없어'));
-});
+// router.all('*', function(req, res, next) {
+//   next(createError(404, '그런 api 없어'));
+// });
+
+router.all('*', require('../notFound'));
 
 module.exports = router;

@@ -27,8 +27,13 @@ export default new Router({
     {
       path: '/user',
       name: 'user',
-      //component: () => import(/* webpackChunkName: "about" */ './views/User.vue')
+      //component: () => import(/* webpackChunkName: "user" */ './views/User.vue')
       component: User
+    },
+    {
+      path: '/signin',
+      name: 'signin',
+      component: () => import(/* webpackChunkName: "signin" */ './views/Signin.vue')
     },
     {
       path: '/test/',
@@ -38,12 +43,12 @@ export default new Router({
                   {
                     path: '',
                     name: 'crud',
-                    component: () => import(/* webpackChunkName: "about" */ './views/test/CRUD.vue'),
+                    component: () => import(/* webpackChunkName: "test-crud" */ './views/test/CRUD.vue'),
                   },
                   {
                     path: 'user',
                     name: 'user',
-                    component: () => import(/* webpackChunkName: "about" */ './views/test/User.vue'),
+                    component: () => import(/* webpackChunkName: "test-user" */ './views/test/User.vue'),
                   }
                 ]
     },

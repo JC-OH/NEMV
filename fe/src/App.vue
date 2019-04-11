@@ -131,9 +131,14 @@ export default {
       drawer: null,
       items: [
           {
-            action: 'account_circle',
+            action: 'portrait',
             title: 'About',
             link:"/About"
+          },
+          {
+            action: 'account_circle',
+            title: 'Sign-in',
+            link: '/Signin'
           },
           {
             action: 'computer',
