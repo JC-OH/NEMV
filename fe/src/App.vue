@@ -79,10 +79,10 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile @click="$router.push('sign')">
+            <v-list-tile v-if="!$store.state.token" @click="$router.push('sign')">
               <v-list-tile-title>로그인</v-list-tile-title>
             </v-list-tile>
-            <v-list-tile @click="signOut">
+            <v-list-tile v-else @click="signOut">
               <v-list-tile-title>로그아웃</v-list-tile-title>
             </v-list-tile>
           </v-list>
@@ -123,7 +123,7 @@
     ----------------------------------------------------------------------------------
     -->
     <v-footer color="indigo" app inset>
-    <span class="white--text">&copy; 2017</span>
+    <span class="white--text">&copy; 2017 - {{$store.state.token}}</span>
     </v-footer>
     <!--
     ----------------------------------------------------------------------------------

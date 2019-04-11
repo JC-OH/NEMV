@@ -44,11 +44,13 @@ export default {
           if (!res.data.success) return console.error(res.data.msg);
           // 토큰 저장
           localStorage.setItem('token', res.data.token);
+          // 토큰을 받고 로컬스토리지에 써놓은 다음에 변이 getToken을 이용해 state.token을 갱신했습니다.
+          this.$store.commit('getToken');
 
           // 페이지 이동: 만들어 두었던 About.vue 로 갑니다.
           // this.$router.push 대신 location.href = ‘/header’ 로 해도 상관 없습니다.
           this.$router.push('/Test/Header');
-
+          // // location.href = '/Test/Header'
         })
         .catch((err) => {
           console.error(err.message)
