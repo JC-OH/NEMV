@@ -49,7 +49,13 @@ export default new Router({
                     path: 'user',
                     name: 'user',
                     component: () => import(/* webpackChunkName: "test-user" */ './views/test/User.vue'),
+                  },
+                  {
+                    path: 'header',
+                    name: 'header',
+                    component: () => import(/* webpackChunkName: "test-header" */ './views/test/Header.vue'),
                   }
+
                 ]
     },
     {

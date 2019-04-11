@@ -41,7 +41,14 @@ export default {
     signIn() {
       axios.post(`${this.$apiRootPath}sign/in`, this.form)
         .then((res) => {
-          console.log(res.data);
+          if (!res.data.success) return console.error(res.data.msg);
+          // 토큰 저장
+          localStorage.setItem('token', res.data.token);
+
+          // 페이지 이동: 만들어 두었던 About.vue 로 갑니다.
+          // this.$router.push 대신 location.href = ‘/header’ 로 해도 상관 없습니다.
+          this.$router.push('/Test/Header');
+
         })
         .catch((err) => {
           console.error(err.message)
