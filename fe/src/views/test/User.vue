@@ -336,7 +336,7 @@ export default {
           this.dialog = false;
       },
       delUser(id) {
-          this.$confirm('Do you really want to exit?').then(res => {
+          this.$confirm('Do you really want to exit?', {title: 'Warning'}).then(res => {
             if(res) {
               axios.delete(`${this.$apiRootPath}user/${id}`, {
               }).then((res) => {
@@ -346,7 +346,7 @@ export default {
                 this.pop(err.message);
               })
             }
-            
+
             this.dialog = false;
 
           })
