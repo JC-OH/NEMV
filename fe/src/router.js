@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import User from './views/User.vue'
 import Test from './views/Test.vue'
+//simport TestUser from './views/test/User.vue'
 
 Vue.use(Router)
 
@@ -30,10 +31,21 @@ export default new Router({
       component: User
     },
     {
-      path: '/test',
+      path: '/test/',
       name: 'test',
-      //component: () => import(/* webpackChunkName: "about" */ './views/Test.vue')
-      component: Test
+      component: Test,
+      children: [
+                  {
+                    path: '',
+                    name: 'crud',
+                    component: () => import(/* webpackChunkName: "about" */ './views/test/CRUD.vue'),
+                  },
+                  {
+                    path: 'user',
+                    name: 'user',
+                    component: () => import(/* webpackChunkName: "about" */ './views/test/User.vue'),
+                  }
+                ]
     },
     {
       path: '*',

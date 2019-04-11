@@ -28,6 +28,10 @@ var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 
 
+
+//===================================================
+// [S] Express
+//===================================================
 var app = express();
 
 // view engine setup
@@ -38,7 +42,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+//---------------------------------------------------
+// DB Connection
+//---------------------------------------------------
 mongoose.connect(cfg.dbUrl, {useNewUrlParser: true}, (err)=> {
   if (err) return console.log(err);
   // console.log("mongoose connected!");
@@ -86,4 +92,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+//===================================================
+// [E] Express
+//===================================================
 module.exports = app;

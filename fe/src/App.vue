@@ -1,24 +1,125 @@
 <template>
-  <v-app>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-      >
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
-    </v-toolbar>
+   <!--
+   ==================================================================================
+   == [S] v-app
+   ==================================================================================
+   -->
+  <div id="app">
+   <v-app id="inspire">
+    <!--
+    ----------------------------------------------------------------------------------
+    -- [E] v-navigation-drawer
+    ----------------------------------------------------------------------------------
+    -->
+    <v-navigation-drawer
+       fixed
+       v-model="drawer"
+       app
+    >
 
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-action>
+              <v-icon>home</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Home</v-list-tile-title>
+          </v-list-tile>
+          <v-list-group
+            v-for="item in items"
+            :key="item.title"
+            v-model="item.active"
+            :prepend-icon="item.action"
+            :append-icon=" (item.items) ? $vuetify.icons.expand : ''"
+            no-action
+          >
+            <template v-slot:activator>
+              <v-list-tile
+                :to="item.link"
+              >
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+            <v-list-tile
+              v-for="subItem in item.items"
+              :key="`${item.title}-${subItem.title}`"
+              :to="subItem.link"
+            >
+              <v-list-tile-content>
+                <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+              </v-list-tile-content>
+
+              <v-list-tile-action>
+                <v-icon>{{ subItem.action }}</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list-group>
+        </v-list>
+
+    </v-navigation-drawer>
+    <!--
+    ----------------------------------------------------------------------------------
+    -- [S] v-navigation-drawer
+    ----------------------------------------------------------------------------------
+    -->
+
+     <!--
+     ----------------------------------------------------------------------------------
+     -- [S] v-toolbar
+     ----------------------------------------------------------------------------------
+     -->
+    <v-toolbar color="indigo" dark fixed app>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Application</v-toolbar-title>
+    </v-toolbar>
+     <!--
+     ----------------------------------------------------------------------------------
+     -- [E] v-toolbar
+     ----------------------------------------------------------------------------------
+     -->
+
+    <!--
+    ----------------------------------------------------------------------------------
+    -- [S] v-content
+    ----------------------------------------------------------------------------------
+    -->
     <v-content>
-      <router-view></router-view>
+      <v-container fluid fill-height>
+        <v-layout
+          justify-center
+          align-center
+        >
+          <router-view/>
+        </v-layout>
+      </v-container>
     </v-content>
+    <!--
+    ----------------------------------------------------------------------------------
+    -- [E] v-content
+    ----------------------------------------------------------------------------------
+    -->
+
+    <!--
+    ----------------------------------------------------------------------------------
+    -- [S] v-footer
+    ----------------------------------------------------------------------------------
+    -->
+    <v-footer color="indigo" app inset>
+    <span class="white--text">&copy; 2017</span>
+    </v-footer>
+    <!--
+    ----------------------------------------------------------------------------------
+    -- [E] v-footer
+    ----------------------------------------------------------------------------------
+    -->
   </v-app>
+   <!--
+   ==================================================================================
+   == [E] v-app
+   ==================================================================================
+   -->
+</div>
 </template>
 
 <script>
@@ -27,7 +128,23 @@ export default {
   name: 'App',
   data () {
     return {
-      //
+      drawer: null,
+      items: [
+          {
+            action: 'account_circle',
+            title: 'About',
+            link:"/About"
+          },
+          {
+            action: 'computer',
+            title: 'Test',
+            items: [
+              { title: 'CRUD', action: 'work_outline', link:"/Test" },
+              { title: 'User', action: 'person', link:"/Test/User" }
+            ]
+          }
+        ]
+
     }
   }
 }
