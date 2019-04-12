@@ -13,6 +13,25 @@ Vue.prototype.$apiRootPath = process.env.NODE_ENV !== 'production' ? 'http://loc
 Vue.prototype.$axios = axios
 Vue.prototype.$axios.defaults.baseURL = Vue.prototype.$apiRootPath;
 
+// [axios - Interceptors]
+// You can intercept requests or responses before they are handled by then or catch.
+Vue.prototype.$axios.interceptors.request.use(function (config) {
+  // Do something before request is sent
+  config.headers.Authorization = localStorage.getItem('token')
+  return config
+}, function (error) {
+  // Do something with request error
+  return Promise.reject(error)
+})
+ // Add a response interceptor
+Vue.prototype.$axios.interceptors.response.use(function (response) {
+  // Do something with response data
+  return response
+}, function (error) {
+  // Do something with response error
+  return Promise.reject(error)
+})
+
 Vue.use(VuetifyConfirm)
 
 // [네비게이션 가드]
@@ -35,11 +54,11 @@ Vue.use(VuetifyConfirm)
 // 인스턴스화 된 인스턴스들의 beforeRouteEnter가드에서 next에 전달 된 콜백을 호출합니다.
 
 // Header를 자동으로 세팅함.
-router.beforeEach((to, from, next) => {
-  // Vue.prototype.$axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
-  Vue.prototype.$axios.defaults.headers.common['Authorization'] = store.state.token;
-  next();
-})
+// router.beforeEach((to, from, next) => {
+//   // Vue.prototype.$axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+//   Vue.prototype.$axios.defaults.headers.common['Authorization'] = store.state.token;
+//   next();
+// })
 
 new Vue({
   router,
