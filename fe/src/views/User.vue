@@ -113,7 +113,7 @@ export default {
   mounted () {
     for (let i = 10; i < 40; i++) this.userAges.push(i);
     for (let i = 0; i < 4; i++) this.userLvs.push(i);
-    this.$axios.defaults.headers.common['Authorization'] = this.$store.state.token;
+    //this.$axios.defaults.headers.common['Authorization'] = this.$store.state.token;
     this.getUsers();
   },
   methods: {

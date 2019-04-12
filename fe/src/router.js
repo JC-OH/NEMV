@@ -7,7 +7,8 @@ import Pages from './views/Pages.vue'
 //simport TestUser from './views/test/User.vue'
 
 const pageCheck = (to, from, next) => {
-    Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') }, { headers: { Authorization: localStorage.getItem('token') } })
+    //Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') }, { headers: { Authorization: localStorage.getItem('token') } })
+    Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') })
       .then((res) => {
         if (!res.data.success) throw new Error(res.data.msg)
         next()

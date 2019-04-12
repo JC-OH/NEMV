@@ -95,7 +95,7 @@ export default {
   },
   mounted () {
     for (let i = 0; i < 4; i++) this.pageLvs.push(i);
-    this.$axios.defaults.headers.common['Authorization'] = this.$store.state.token;
+    //this.$axios.defaults.headers.common['Authorization'] = this.$store.state.token;
     this.getPages()
   },
   methods: {
