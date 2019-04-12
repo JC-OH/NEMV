@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import User from './views/User.vue'
 import Test from './views/Test.vue'
+import Pages from './views/Pages.vue'
 //simport TestUser from './views/test/User.vue'
 
 Vue.use(Router)
@@ -31,6 +32,11 @@ export default new Router({
       component: User
     },
     {
+      path: '/page',
+      name: 'page',
+      component: () => import(/* webpackChunkName: "about" */ './views/Page.vue')
+    },
+    {
       path: '/signin',
       name: 'signin',
       component: () => import(/* webpackChunkName: "signin" */ './views/Signin.vue')
@@ -41,7 +47,35 @@ export default new Router({
       component: () => import(/* webpackChunkName: "block" */ './views/Block.vue')
     },
     {
-      path: '/test/',
+      path: '/pages',
+      name: 'pages',
+      //component: import(/* webpackChunkName: "page" */ './views/Page.vue'),
+      component: Pages,
+      children: [
+                  {
+                    path: '',
+                    name: 'lv0',
+                    component: () => import('./views/page/lv0')
+                  },
+                  {
+                    path: 'lv1',
+                    name: 'lv1',
+                    component: () => import('./views/page/lv1')
+                  },
+                  {
+                    path: 'lv2',
+                    name: 'lv2',
+                    component: () => import('./views/page/lv2')
+                  },
+                  {
+                    path: 'lv3',
+                    name: 'lv3',
+                    component: () => import('./views/page/lv3')
+                  }
+                ]
+    },
+    {
+      path: '/test',
       name: 'test',
       component: Test,
       children: [

@@ -36,6 +36,7 @@ router.all('*', function(req, res, next) {
 router.use('/test', require('./test'));
 router.use('/user', require('./user'));
 router.use('/crud', require('./crud'));
+router.use('/manage', require('./manage'));
 
 router.all('*', require('./notFound'));
 
