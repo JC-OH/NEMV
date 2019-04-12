@@ -6,9 +6,10 @@ const User = require('../../../models/users')
 // Get
 //---------------------------------------------------
 router.get('/', function(req, res, next) {
+
   User.find()
-    .then(result => {
-      res.send({ success: true, users: result })
+    .then(data => {
+      res.send({ success: true, users: data })
     })
     .catch(err => {
       res.send({ success: false, msg: err.message  })

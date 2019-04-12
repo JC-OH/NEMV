@@ -102,7 +102,10 @@ export default {
     getPages () {
       this.$axios.get(`${this.$apiRootPath}manage/page`)
         .then((r) => {
-          this.pages = r.data.pages
+          if (r.data.success)
+            this.pages = r.data.pages;
+          else
+            this.pop(r.data.msg);
         })
         .catch((e) => {
           this.pop(e.message)
@@ -120,8 +123,12 @@ export default {
         name: this.pageName, lv: this.pageLv
       })
         .then((r) => {
-          this.pop('페이지 수정 완료')
-          this.getPages()
+          if (r.data.success) {
+            this.pop('페이지 수정 완료')
+            this.getPages()
+          } else {
+            this.pop(r.data.msg)
+          }
         })
         .catch((e) => {
           this.pop(e.message)
@@ -130,8 +137,12 @@ export default {
     delPage (id) {
       this.$axios.delete(`${this.$apiRootPath}manage/page/${id}`)
         .then((r) => {
-          this.pop('페이지 삭제 완료')
-          this.getPages()
+          if (r.data.success) {
+            this.pop('페이지 삭제 완료')
+            this.getPages()
+          } else {
+            this.pop(r.data.msg)
+          }
         })
         .catch((e) => {
           this.pop(e.message)

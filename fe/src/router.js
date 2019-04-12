@@ -6,6 +6,17 @@ import Test from './views/Test.vue'
 import Pages from './views/Pages.vue'
 //simport TestUser from './views/test/User.vue'
 
+const pageCheck = (to, from, next) => {
+    Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') }, { headers: { Authorization: localStorage.getItem('token') } })
+      .then((res) => {
+        if (!res.data.success) throw new Error(res.data.msg)
+        next()
+      })
+      .catch((err) => {
+        next(`/block/${err.message}`)
+      });
+}
+
 Vue.use(Router)
 
 export default new Router({
@@ -42,56 +53,58 @@ export default new Router({
       component: () => import(/* webpackChunkName: "signin" */ './views/Signin.vue')
     },
     {
-      path: '/block',
+      path: '/block/:msg',
       name: 'block',
       component: () => import(/* webpackChunkName: "block" */ './views/Block.vue')
     },
     {
       path: '/pages',
-      name: 'pages',
       //component: import(/* webpackChunkName: "page" */ './views/Page.vue'),
       component: Pages,
       children: [
                   {
-                    path: '',
+                    path: 'lv0',
                     name: 'lv0',
-                    component: () => import('./views/page/lv0')
+                    component: () => import('./views/page/lv0'),
+                    beforeEnter: pageCheck
                   },
                   {
                     path: 'lv1',
                     name: 'lv1',
-                    component: () => import('./views/page/lv1')
+                    component: () => import('./views/page/lv1'),
+                    beforeEnter: pageCheck
                   },
                   {
                     path: 'lv2',
                     name: 'lv2',
-                    component: () => import('./views/page/lv2')
+                    component: () => import('./views/page/lv2'),
+                    beforeEnter: pageCheck
                   },
                   {
                     path: 'lv3',
                     name: 'lv3',
-                    component: () => import('./views/page/lv3')
+                    component: () => import('./views/page/lv3'),
+                    beforeEnter: pageCheck
                   }
                 ]
     },
     {
       path: '/test',
-      name: 'test',
       component: Test,
       children: [
                   {
                     path: '',
-                    name: 'crud',
+                    name: 'test-crud',
                     component: () => import(/* webpackChunkName: "test-crud" */ './views/test/CRUD.vue'),
                   },
                   {
                     path: 'user',
-                    name: 'user',
+                    name: 'test-user',
                     component: () => import(/* webpackChunkName: "test-user" */ './views/test/User.vue'),
                   },
                   {
                     path: 'header',
-                    name: 'header',
+                    name: 'test-header',
                     component: () => import(/* webpackChunkName: "test-header" */ './views/test/Header.vue'),
                     // beforeEnter: authCheck
                     beforeEnter: (to, from, next) => {

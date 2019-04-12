@@ -6,8 +6,7 @@
     >
       데이터가 없습니다
     </v-alert>
-    <!--
-    -->
+
     <v-layout row wrap>
       <v-flex xs12 sm6 md4 v-for="user in users" :key="user._id">
         <v-card height="100%">
@@ -121,7 +120,11 @@ export default {
     getUsers() {
       this.$axios.get(`${this.$apiRootPath}manage/user`)
         .then((res) => {
-          this.users = res.data.users;
+          if (res.data.success) {
+            this.users = res.data.users;
+          } else {
+            this.popMsg(res.data.msg);
+          }
         })
         .catch((err) => {
           this.popMsg(err.message);

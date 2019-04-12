@@ -80,7 +80,7 @@
           </v-btn>
           <v-list>
             <!-- v-if=”!$store.state.token” 으로 토큰이 없을때는 로그인 있을때는 로그아웃이 처리되었습니다. -->
-            <v-list-tile v-if="!$store.state.token" @click="$router.push('signin')">
+            <v-list-tile v-if="!$store.state.token" @click="$router.push('/signin')">
               <v-list-tile-title>로그인</v-list-tile-title>
             </v-list-tile>
             <v-list-tile v-else @click="signOut">
@@ -172,7 +172,7 @@ export default {
             action: 'folder_open',
             title: 'Pages',
             items: [
-              { title: 'lv 0', action: 'web', link:"/Pages" },
+              { title: 'lv 0', action: 'web', link:"/Pages/lv0" },
               { title: 'lv 1', action: 'web', link:"/Pages/lv1" },
               { title: 'lv 2', action: 'web', link:"/Pages/lv2" },
               { title: 'lv 3', action: 'web', link:"/Pages/lv3" }
