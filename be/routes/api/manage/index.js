@@ -10,6 +10,8 @@ router.all('*', function(req, res, next) {
 
 router.use('/user', require('./user'))
 router.use('/page', require('./page'))
+// manage에 site를 등록해줬습니다.
+router.use('/site', require('./site'))
 
 // router.all('*', (req, res, next) => {
 //   res.send({ success: true, msg: "manage" })

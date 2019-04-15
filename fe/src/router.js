@@ -52,10 +52,22 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/Page.vue')
     },
     {
+      path: '/site',
+      name: 'site',
+      component: () => import(/* webpackChunkName: "about" */ './views/Site.vue')
+    },
+    {
       path: '/signin',
       name: 'signin',
       component: () => import(/* webpackChunkName: "signin" */ './views/Signin.vue')
     },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import(/* webpackChunkName: "signin" */ './views/Register.vue')
+    },
+
+
     {
       path: '/block/:msg',
       name: 'block',

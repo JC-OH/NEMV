@@ -5,7 +5,7 @@
    ==================================================================================
    -->
   <div id="app">
-   <v-app id="inspire">
+   <v-app id="inspire" :dark="site.dark">
     <!--
     ----------------------------------------------------------------------------------
     -- [E] v-navigation-drawer
@@ -71,7 +71,7 @@
      -->
     <v-toolbar color="indigo" dark fixed app>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>{{site.title}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-menu bottom left>
@@ -80,9 +80,14 @@
           </v-btn>
           <v-list>
             <!-- v-if=”!$store.state.token” 으로 토큰이 없을때는 로그인 있을때는 로그아웃이 처리되었습니다. -->
-            <v-list-tile v-if="!$store.state.token" @click="$router.push('/signin')">
-              <v-list-tile-title>로그인</v-list-tile-title>
-            </v-list-tile>
+            <template v-if="!$store.state.token">
+              <v-list-tile @click="$router.push('/signin')">
+                <v-list-tile-title>로그인</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile  @click="$router.push('/register')">
+                <v-list-tile-title>회원가입</v-list-tile-title>
+              </v-list-tile>
+            </template>
             <v-list-tile v-else @click="signOut">
               <v-list-tile-title>로그아웃</v-list-tile-title>
             </v-list-tile>
@@ -124,7 +129,7 @@
     ----------------------------------------------------------------------------------
     -->
     <v-footer color="indigo" app inset>
-    <span class="white--text">&copy; 2017 - {{$store.state.token}}</span>
+    <span class="white--text">&copy; {{site.copyright}} - {{$store.state.token}}</span>
     </v-footer>
     <!--
     ----------------------------------------------------------------------------------
@@ -147,6 +152,11 @@ export default {
   data () {
     return {
       drawer: null,
+      site: {
+        title: "기다리는 중",
+        copyright: "기다리는 중",
+        dark: false
+      },
       items: [
           {
             action: 'portrait',
@@ -162,6 +172,11 @@ export default {
             action: 'group',
             title: 'User',
             link: '/User'
+          },
+          {
+            action: 'face',
+            title: 'Site',
+            link: '/Site'
           },
           {
             action: 'folder',
@@ -191,6 +206,9 @@ export default {
 
     }
   },
+  mounted() {
+    this.getSite();
+  },
   methods: {
     signOut() {
       // 로그아웃(signOut)함수에서 토큰을 지워버리고 로그인 페이지로 보냅니다.
@@ -199,6 +217,18 @@ export default {
       //로그아웃에 delToken 변이를 호출해서 토큰 값을 지우는 것이 확인되었습니다.
       this.$store.commit('delToken');
       this.$router.push('/');
+    },
+    getSite() {
+      this.$axios.get('/site')
+        .then(res => {
+          console.log(res.data);
+          this.site.title = res.data.site.title;
+          this.site.copyright = res.data.site.copyright;
+          this.site.dark = res.data.site.dark;
+        })
+        .catch(err => {
+          console.error(err.message);
+        });
     }
   }
 }

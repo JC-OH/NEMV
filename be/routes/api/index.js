@@ -24,6 +24,9 @@ const verifyToken = (token) => {
 
 // /sign을 제외한 모든 api 요청은 .all에 걸립니다.
 router.use('/sign', require('./sign'));
+
+// 아무나 접근 가능한 api로 만듭니다.
+router.use('/site', require('./site'));
 router.all('*', function(req, res, next) {
   // 토큰 검사
   // authorization: '[object Object]',
