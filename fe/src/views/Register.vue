@@ -127,6 +127,7 @@ mounted () {
 methods: {
   submit () {
     // this.$validator.validateAll() 로 false 가 나올경우 에러로 보냅니다.
+
     this.$validator.validateAll()
       .then(r => {
         if (!r) throw new Error('모두 기입해주세요')
@@ -135,9 +136,8 @@ methods: {
       })
       .then(r => {
         if (!r.data.success) throw new Error('서버가 거부했습니다.')
-        this.pop('가입 완료 되었습니다.', 'success')
-
-        this.$route.push('/sign')
+        this.pop('가입 완료 되었습니다.', 'success');
+        this.$router.push('/signin');
       })
       .catch(e => this.pop(e.message, 'warning'))
   },

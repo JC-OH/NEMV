@@ -27,6 +27,10 @@ router.use('/sign', require('./sign'));
 
 // 아무나 접근 가능한 api로 만듭니다.
 router.use('/site', require('./site'));
+
+// 회원가입 API 레지스터를 등록해줍니다.
+router.use('/register', require('./register'));
+
 router.all('*', function(req, res, next) {
   // 토큰 검사
   // authorization: '[object Object]',
