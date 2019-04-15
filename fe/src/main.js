@@ -7,6 +7,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import '@babel/polyfill'
+import VeeValidate from 'vee-validate' // add
+import './plugins/vuetify'
+
 Vue.config.productionTip = false
 Vue.prototype.$apiRootPath = process.env.NODE_ENV !== 'production' ? 'http://localhost:3000/api/' : '/api/'
 // 자주 쓰는 axios를 프로토로 등록 해두었습니다. (this.$axios 로 다른 컴포넌트에서 사용가능)
@@ -31,7 +35,12 @@ Vue.prototype.$axios.interceptors.response.use(function (response) {
   // Do something with response error
   return Promise.reject(error)
 })
+// [비벨 전역 등록]
+// 이제 다른 페이지에서도 비벨을 쓸 수 있습니다.
+Vue.use(VeeValidate) // add
 
+// [Confirm dialog]
+// This module extends vuetify confirm dialog.
 Vue.use(VuetifyConfirm)
 
 // [네비게이션 가드]
