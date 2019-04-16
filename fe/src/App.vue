@@ -174,6 +174,11 @@ export default {
             link: '/User'
           },
           {
+            action: 'group',
+            title: 'Users',
+            link: '/Users'
+          },
+          {
             action: 'face',
             title: 'Site',
             link: '/Site'
