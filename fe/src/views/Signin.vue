@@ -11,6 +11,10 @@
             <v-form>
               <v-text-field prepend-icon="person" v-model="form.id" label="아이디" type="text"></v-text-field>
               <v-text-field prepend-icon="lock" v-model="form.pwd" label="비밀번호" type="password"></v-text-field>
+              <v-checkbox
+                v-model="form.remember"
+                label="암호 기억하기(최대 7일간 보관 됩니다.)"
+              ></v-checkbox>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -24,13 +28,21 @@
 </template>
 <script>
 import axios from 'axios';
+// [로그인 시간 제한하기 - 토큰 갱신]
+// 로그인창에 기억하기 체크박스를 만든다.
+// 기억하기 체크박스를 켜고 로그인 하면 서버는 7일 아닐 경우 5분 기한의 토큰을 보낸다.
+// 서버는 토큰을 받을 때 유효시간을 판단해서 2분 이하로 남았으면 7일 혹은 5분 기한의 토큰을 보낸다.
+// 클라이언트는 최종 2분안에 클릭만 한다면 갱신토큰을 받아서 항상 로그인 상태가 유지된다.
+// 5분동안 아무 입력이 없다면 토큰 기간이 만료되어 로그인 페이지로 안내한다.
 
 export default {
   data() {
     return {
       form: {
         id: "",
-        pwd: ""
+        pwd: "",
+        //이제 form.remember가 같이 날라갑니다.
+        remember: false
       }
     }
   },

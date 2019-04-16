@@ -1,23 +1,12 @@
 var express = require('express');
 var router = express.Router();
-
-const jwt = require('jsonwebtoken');
+const crypto = require('crypto')
 const config = require('../../../../config')
-const crypto = require('crypto');
 const User = require('../../../models/users')
-
-//id, age와 cfg.secretKey로 토큰을 만드는 함수를 만듭니다.
-const signToken = (id, age) => {
-  return new Promise((resolve, rejest) => {
-    jwt.sign({ id, age }, config.secretKey, (err, token) => {
-      if (err) reject(err);
-      resolve(token);
-    })
-  })
-}
+const tokenHelper = require('../../../helpers/token')
 
 router.post('/in', (req, res, next) => {
-  const { id, pwd } = req.body;
+  const { id, pwd, remember } = req.body;
 
   if (!id) return res.send({ success: false, msg: '아이디가 없습니다.' });
   if (!pwd) return res.send({ success: false, msg: '비밀번호가 없습니다.' });
@@ -35,7 +24,7 @@ router.post('/in', (req, res, next) => {
 
         // 3. 정상적인 경우에 id, age로 토큰을 만들어서 success: true와 토큰을 전달합니다.
         //return signToken(user.id, user.age);
-        return signToken(user.id, user.lv, user.name)
+        return tokenHelper.sign(user.id, user.lv, user.name, remember)
     })
     .then((rst) => {
       return res.send({ success: true, token: rst });

@@ -30,6 +30,13 @@ Vue.prototype.$axios.interceptors.request.use(function (config) {
  // Add a response interceptor
 Vue.prototype.$axios.interceptors.response.use(function (response) {
   // Do something with response data
+  // 이제 정상적인 요청에는 항상 토큰 응답이 오게 됩니다.
+
+  // 토큰이 있을때 저장만하고 원래 응답 시나리오대로 하면 되는 것이죠.
+  const token = response.data.token
+  console.log(token)
+  if (token) localStorage.setItem('token', token)
+
   return response
 }, function (error) {
   // Do something with response error
