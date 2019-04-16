@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const crypto = require('crypto')
 const config = require('../../config')
 
 // [몽구스 워닝메세지 제거]
@@ -33,22 +34,38 @@ const User = mongoose.model('User', userSchema)
 // 기존에 name이 unique: true 였기 때문에 인덱스를 초기화하지 않으면 중복 에러가 납니다.
 // 이렇게 인덱스를 지워버리고 주석 처리하면 됩니다.
 //User.collection.dropIndexes({ name: 1 })
-//User.deleteMany({});
+User.deleteMany({});
 // [어드민 계정 설정 준비]
 // 서버 구동시 프라미스 체인을 이용해서 id를 찾고 없으면 만드는 것입니다.
 
 User.findOne({ id: config.admin.id })
   .then((res) => {
+    //console.log("1.", res);
     //if (!res) return User.create({ id: config.admin.id, pwd: config.admin.pwd, name: config.admin.name });
     // [권한 레벨]
     if (!res) return User.create({ id: config.admin.id, pwd: config.admin.pwd, name: config.admin.name, lv: 0  });
-    return Promise.resolve(null);
+    return Promise.resolve(res);
   })
   .then((res) => {
+    //console.log("2.", res);
+    if (res.pwd !== config.admin.pwd) return Promise.resolve(null);
+
     if (res) console.log(`admin:${res.id} created!`);
+    // [단방향 암호화 - crypto.scryptSync]
+    // password: 입력 문자(비밀번호)
+    // salt: 풀기 어렵게 만들기
+    // keyLen: 바이트수
+    // Option: 암호화 방법등 여러가지
+
+    // _id는 몽고디비의 오브젝트키 라는 형이기 때문에 toString()으로 꼭 문자열로 변경해야합니다.
+    const pwd = crypto.scryptSync(res.pwd, res._id.toString(), 64, { N: 1024 }).toString('hex')
+    return User.updateOne({ _id: res._id }, { $set: { pwd } })
+  })
+  .then(res => {
+    if (res) console.log('pwd changed!')
   })
   .catch((err) => {
-    console.error(err.message)
+    console.error("Here", err.message)
   });
 
 module.exports = User
