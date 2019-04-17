@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import User from './views/User.vue'
+import User from './views/manage/User.vue'
 import Test from './views/Test.vue'
 import Pages from './views/Pages.vue'
 //simport TestUser from './views/test/User.vue'
@@ -41,29 +41,29 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/user',
-      name: 'user',
+      path: '/manage/user',
+      name: 'manage-user',
       //component: () => import(/* webpackChunkName: "user" */ './views/User.vue')
       component: User
     },
     {
-      path: '/users',
-      name: 'users',
-      component: () => import(/* webpackChunkName: "about" */ './views/Users.vue')
+      path: '/manage/users',
+      name: 'manage-users',
+      component: () => import(/* webpackChunkName: "about" */ './views/manage/Users.vue')
     },
     {
-      path: '/page',
-      name: 'page',
-      component: () => import(/* webpackChunkName: "about" */ './views/Page.vue')
+      path: '/manage/page',
+      name: 'manage-page',
+      component: () => import(/* webpackChunkName: "about" */ './views/manage/Page.vue')
     },
     {
-      path: '/site',
-      name: 'site',
-      component: () => import(/* webpackChunkName: "about" */ './views/Site.vue')
+      path: '/manage/site',
+      name: 'manage-site',
+      component: () => import(/* webpackChunkName: "about" */ './views/manage/Site.vue')
     },
     {
-      path: '/manage/boards',
-      name: 'manage-boards',
+      path: '/manage/board',
+      name: 'manage-board',
       component: () => import('./views/manage/Boards.vue'),
       //beforeEnter: pageCheck
     },
