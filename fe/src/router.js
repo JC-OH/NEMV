@@ -62,6 +62,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/Site.vue')
     },
     {
+      path: '/manage/boards',
+      name: 'manage-boards',
+      component: () => import('./views/manage/Boards.vue'),
+      //beforeEnter: pageCheck
+    },
+    {
       path: '/signin',
       name: 'signin',
       component: () => import(/* webpackChunkName: "signin" */ './views/Signin.vue')

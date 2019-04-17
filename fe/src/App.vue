@@ -184,8 +184,13 @@ export default {
             link: '/Site'
           },
           {
+            action: 'settings',
+            title: 'Board',
+            link: '/Manage/Boards'
+          },
+          {
             action: 'folder',
-            title: 'page',
+            title: 'Page',
             link: '/Page'
           },
           {
