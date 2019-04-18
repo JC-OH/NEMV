@@ -24,7 +24,7 @@ router.post('/in', (req, res, next) => {
 
         // 3. 정상적인 경우에 id, age로 토큰을 만들어서 success: true와 토큰을 전달합니다.
         //return signToken(user.id, user.age);
-        return tokenHelper.sign(user.id, user.lv, user.name, remember)
+        return tokenHelper.sign(user._id,user.id, user.lv, user.name, remember)
     })
     .then((rst) => {
       return res.send({ success: true, token: rst });

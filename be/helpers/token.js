@@ -5,7 +5,7 @@ const moment = require('moment');
 const createError = require('http-errors');
 
 //id, age와 config.secretKey로 토큰을 만드는 함수를 만듭니다.
-const signToken = (id, lv, name, remember) => {
+const signToken = (_id, id, lv, name, remember) => {
   const opts = {
     issuer: config.jwt.issuer,
     subject: config.jwt.subject,
@@ -36,7 +36,7 @@ const signToken = (id, lv, name, remember) => {
     // header
     // keyid
     // mutatePayload: if true, the sign function will modify the payload object directly. This is useful if you need a raw reference to the payload after claims have been applied to it but before it has been encoded into a token.
-    jwt.sign({ id, lv, name, remember }, config.jwt.secretKey, opts, (err, token) => {
+    jwt.sign({ _id, id, lv, name, remember }, config.jwt.secretKey, opts, (err, token) => {
       if (err) reject(err);
       resolve(token);
     })
@@ -47,17 +47,20 @@ const signToken = (id, lv, name, remember) => {
 // [토큰 검사하기]
 // 토큰 확인 함수를 만듭니다.
 const verifyToken = (token) => {
-  return new Promise((resolve, reject) => {
 
+  return new Promise((resolve, reject) => {
+    // console.log("token", typeof token);
     // token이 undefined 이면 손님으로 만듭니다.
-    if (!token) resolve({ id: 'guest', name: '손님', lv: 3 });
+    if (!token) {
+      resolve({ id: 'guest', name: '손님', lv: 3 })
+    };
     // 문자열 체크를 넣은 이유는 토큰이 없을때 ‘null’로 문자 4글자가 오기 때문입니다.
     // null도 손님으로 변경했습니다.(추후 개선이 필요합니다.)
     if ((typeof token) !== 'string') reject(new Error("문자가 아닌 토큰입니다."))
     if (token.length < 20) resolve({ id: 'guest', name: '손님', lv: 3 });
 
     jwt.verify(token, config.jwt.secretKey, (err, user) => {
-      if (err) reject(err);
+      if (err) return reject(err);
       resolve(user);
     })
   })
@@ -67,6 +70,7 @@ const verifyToken = (token) => {
 const getToken = async(t) => {
   // 토큰 풀기를 해서 정보를 가져오고 기다립니다.
   let vt = await verifyToken(t)
+
   //토큰이 손님 권한이면(vt.exp > 2) 그냥 나갑니다.
   if (vt.lv > 2) return { user: vt, token: null }
   //시간차를 구합니다.
@@ -83,7 +87,7 @@ const getToken = async(t) => {
   const expSec = (vt.exp - vt.iat)
   if (diff > expSec / config.jwt.expiresInDiv) return { user: vt, token: null }
 
-  const nt = await signToken(vt.id, vt.lv, vt.name, expSec)
+  const nt = await signToken(vt._id, vt.id, vt.lv, vt.name, expSec)
   vt = await verifyToken(nt)
   return { user: vt, token: nt }
 };

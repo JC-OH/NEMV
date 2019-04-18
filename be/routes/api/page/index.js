@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const router = express.Router();
 const Page = require('../../../models/pages');
 router.post('/', function(req, res, next) {
+
   const { name } = req.body
   Page.findOne({ name })
     .then((page) => {
@@ -17,7 +18,10 @@ router.post('/', function(req, res, next) {
       res.send({ success: true, d: req.user, token: req.token })
     })
     // 403 Forbidden
-    .catch(err => next(createError(403, err.message)))
+    .catch(err => {
+      console.log("err.message", err.message);
+      next(createError(403, err.message))
+    })
 });
 
 // 404 Not Found
