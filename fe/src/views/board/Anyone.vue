@@ -31,10 +31,15 @@
          :loading="loading">
          <template slot="items" slot-scope="props">
            <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
-           <td :class="headers[1].class">{{ props.item.title }}</td>
+           <!-- 글 제목에 링크를 걸어서 다이얼로그를 띄우게 했습니다. -->
+           <!-- 게시물을 그대로 read(atc)넘깁니다. -->
+           <td :class="headers[1].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
            <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
            <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
            <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
+
+
+
          </template>
        </v-data-table>
      </v-flex>
@@ -52,6 +57,22 @@
     >
       <v-icon>add</v-icon>
     </v-btn>
+
+    <v-dialog v-model="dlRead" persistent max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{rd.title}}</span>
+        </v-card-title>
+        <v-card-text>
+          {{rd.content}}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" flat @click.native="dlRead = false">닫기</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="dialog" persistent max-width="500px">
       <v-card>
         <v-card-title>
@@ -131,6 +152,11 @@ export default {
         title: '',
         content: ''
       },
+      dlRead: false,
+      rd: {
+        title: '',
+        content: ''
+      },
       sb: {
         act: false,
         msg: '',
@@ -172,15 +198,45 @@ export default {
           this.pop(e.message, 'error')
         })
     },
+    // list () {
+    //   if (this.loading) return
+    //   // loading이 true 이면 테이블 상단에 프로그레스바가 표시됩니다.
+    //   // 요청하기 전에 true 로 놓고 응답을 받으면 false 로 놓으면 끝입니다.
+    //   this.loading = true
+    //   this.$axios.get(`article/${this.board._id}`)
+    //     .then(({ data }) => {
+    //       // 실제 데이터 입니다. 현재 articles를 받아서 바인드시켜놨습니다.
+    //       this.articles = data.ds
+    //       this.loading = false
+    //     })
+    //     .catch((e) => {
+    //       this.pop(e.message, 'error')
+    //       this.loading = false
+    //     })
+    // },
     list () {
       if (this.loading) return
-      // loading이 true 이면 테이블 상단에 프로그레스바가 표시됩니다.
-      // 요청하기 전에 true 로 놓고 응답을 받으면 false 로 놓으면 끝입니다.
       this.loading = true
-      this.$axios.get(`article/${this.board._id}`)
+      this.$axios.get(`article/list/${this.board._id}`)
         .then(({ data }) => {
-          // 실제 데이터 입니다. 현재 articles를 받아서 바인드시켜놨습니다.
           this.articles = data.ds
+          this.loading = false
+        })
+        .catch((e) => {
+          this.pop(e.message, 'error')
+          this.loading = false
+        })
+    },
+    read (atc) {
+      //this.rd라는 변수에 제목(atc.title)을 넣어줍니다.
+      this.rd.title = atc.title
+      this.loading = true
+      this.$axios.get(`article/read/${atc._id}`)
+        .then(({ data }) => {
+          // 새로 만든 다이얼로그(dlRead)를 띄웁니다.
+          this.dlRead = true
+          // api호출해서 내용(content)를 받아서 this.rd.content에 넣어줍니다.
+          this.rd.content = data.d.content
           this.loading = false
         })
         .catch((e) => {

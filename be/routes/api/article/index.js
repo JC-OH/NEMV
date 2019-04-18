@@ -32,24 +32,8 @@ router.post('/:_board', (req, res, next) => {
       res.send({ success: false, msg: e.message })
     })
 })
-router.get('/:_board', (req, res, next) => {
-  const _board = req.params._board
 
-  const f = {}
-  // 게시판이 지정 안되었을 경우(_board: null) 전체(f = {}) 를 불러 올 수도 있습니다.
-  if (_board) f._board = _board
-  // 게시판이 지정된 게시물들을 읽습니다.
-
-  // 게시물에 연결된 사용자 정보중 비밀번호는 빼고 전송합니다.
-  Article.find(f).populate('_user', '-pwd')
-    .then(rs => {
-      res.send({ success: true, ds: rs, token: req.token })
-    })
-    .catch(e => {
-      res.send({ success: false, msg: e.message })
-    })
-});
-
+// [수정하기]
 router.put('/:_id', (req, res, next) => {
   // 손님(!req.user._id or req.user.lv ===3 )은 수정이 안됩니다.
   if (!req.user._id) return res.send({ success: false, msg: '게시물 수정 권한이 없습니다' })
@@ -72,6 +56,7 @@ router.put('/:_id', (req, res, next) => {
     })
 })
 
+// [삭제하기]
 router.delete('/:_id', (req, res, next) => {
   // 손님(!req.user._id or req.user.lv ===3 )은 삭제가 안됩니다.
   if (!req.user._id) return res.send({ success: false, msg: '게시물 수정 권한이 없습니다' })
@@ -87,6 +72,54 @@ router.delete('/:_id', (req, res, next) => {
       }
       return Article.deleteOne({ _id })
     })
+    .then(r => {
+      res.send({ success: true, d: r, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })
+})
+// [게시물 목록 읽기]
+router.get('/list/:_board', (req, res, next) => {
+  const _board = req.params._board
+
+  const f = {}
+  if (_board) f._board = _board
+  // .select(‘-content’) 으로 내용을 제거한 결과를 보냅니다.
+  Article.find(f).select('-content').populate('_user', '-pwd')
+    .then(rs => {
+      res.send({ success: true, ds: rs, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })
+})
+
+// [읽기]
+router.get('/:_board', (req, res, next) => {
+  const _board = req.params._board
+
+  const f = {}
+  // 게시판이 지정 안되었을 경우(_board: null) 전체(f = {}) 를 불러 올 수도 있습니다.
+  if (_board) f._board = _board
+  // 게시판이 지정된 게시물들을 읽습니다.
+
+  // 게시물에 연결된 사용자 정보중 비밀번호는 빼고 전송합니다.
+  Article.find(f).populate('_user', '-pwd')
+    .then(rs => {
+      res.send({ success: true, ds: rs, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })
+});
+
+// [게시물 내용 읽기]
+router.get('/read/:_id', (req, res, next) => {
+  const _id = req.params._id
+  // .select(‘content’) 로 게시물 하나의 내용만 읽어서 전송합니다.
+  // findById() findOne() 의 차이는 findById(id) = findOne({ _id: id }) 입니다 그냥 편의를 위해 몽구스에서 만든 것이죠.
+  Article.findById(_id).select('content')
     .then(r => {
       res.send({ success: true, d: r, token: req.token })
     })
