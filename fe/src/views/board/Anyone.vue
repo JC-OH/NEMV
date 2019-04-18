@@ -24,6 +24,20 @@
       <v-flex xs12 sm6 md4 v-for="article in articles" :key="article._id">
         {{article}}
       </v-flex>
+      <v-flex xs12>
+       <v-data-table
+         :headers="headers"
+         :items="articles"
+         :loading="loading">
+         <template slot="items" slot-scope="props">
+           <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
+           <td :class="headers[1].class">{{ props.item.title }}</td>
+           <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
+           <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
+           <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
+         </template>
+       </v-data-table>
+     </v-flex>
     </v-layout>
 
     <v-btn
@@ -96,6 +110,21 @@ export default {
         rmk: '무엇?'
       },
       articles: [],
+      // 상단에 표시될 필드(컬럼) 들을 바인드 합니다. 배열로 되어 있으며 배열 개수만큼 표시됩니다.
+      // 데이터테이블의 핵심인 headers를 먼저 정의 해야합니다.
+      // - value는 값의 키 입니다.
+      // - text는 표시될 내용입니다.
+      // - sortable은 클릭해서 정렬이 가능하게 합니다.
+      // - class는 해당 컬럼에 스타일을 적용할 수 있습니다.(_id는 hidden-sm-and-down으로 태블릿 이하에서는 표시되지 않음)
+      // - html td 에 class를 바인딩 해놓은 것을 확인 할 수 있습니다.
+      headers: [
+        { text: '날짜', value: '_id', sortable: true, class: 'hidden-sm-and-down' },
+        { text: '제목', value: 'title', sortable: true },
+        { text: '글쓴이', value: '_user', sortable: false },
+        { text: '조회수', value: 'cnt.view', sortable: true },
+        { text: '추천', value: 'cnt.like', sortable: true }
+      ],
+      loading: false,
       dialog: false,
       lvs: [0, 1, 2, 3],
       form: {
@@ -123,7 +152,6 @@ export default {
     get () {
       this.$axios.get('board/아무나')
         .then(({ data }) => {
-          console.log(data);
           if (!data.success) throw new Error(data.msg)
           this.board = data.d
           this.list()
@@ -145,13 +173,24 @@ export default {
         })
     },
     list () {
+      if (this.loading) return
+      // loading이 true 이면 테이블 상단에 프로그레스바가 표시됩니다.
+      // 요청하기 전에 true 로 놓고 응답을 받으면 false 로 놓으면 끝입니다.
+      this.loading = true
       this.$axios.get(`article/${this.board._id}`)
         .then(({ data }) => {
+          // 실제 데이터 입니다. 현재 articles를 받아서 바인드시켜놨습니다.
           this.articles = data.ds
+          this.loading = false
         })
         .catch((e) => {
           this.pop(e.message, 'error')
+          this.loading = false
         })
+    },
+    id2date (val) {
+      if (!val) return '잘못된 시간 정보'
+      return new Date(parseInt(val.substring(0, 8), 16) * 1000).toLocaleString()
     },
     pop (m, c) {
       this.sb.act = true
