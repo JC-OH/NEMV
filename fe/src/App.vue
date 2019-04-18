@@ -79,7 +79,7 @@
           </v-btn>
           <v-list>
             <template v-if="!$store.state.token">
-              <v-list-tile  @click="$router.push('/sign')">
+              <v-list-tile  @click="$router.push('/signin')">
                 <v-list-tile-title>로그인</v-list-tile-title>
               </v-list-tile>
               <v-list-tile  @click="$router.push('/register')">
@@ -114,6 +114,20 @@ export default {
       siteCopyright: '기다리는중',
       siteDark: false,
       items: [
+       {
+         icon: 'chat',
+         title: '끄적끄적',
+         act: true,
+         subItems: [
+           {
+             icon: 'home',
+             title: '아무나',
+             to: {
+               path: '/'
+             }
+           }
+         ]
+       },
         {
           icon: 'pan_tool',
           title: '레벨테스트',
@@ -198,9 +212,9 @@ export default {
     getSite () {
       this.$axios.get('/site')
         .then(r => {
-          this.siteTitle = r.data.d.title
-          this.siteCopyright = r.data.d.copyright
-          this.siteDark = r.data.d.dark
+          this.siteTitle = r.data.site.title
+          this.siteCopyright = r.data.site.copyright
+          this.siteDark = r.data.site.dark
         })
         .catch(e => console.error(e.message))
     }

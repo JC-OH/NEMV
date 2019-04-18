@@ -10,7 +10,8 @@ const signToken = (id, lv, name, remember) => {
     issuer: config.jwt.issuer,
     subject: config.jwt.subject,
     expiresIn: config.jwt.expiresIn, // 3분
-    algorithm: config.jwt.algorithm
+    algorithm: config.jwt.algorithm,
+    //expiresIn: exp
   }
   // 기억하기를 눌렀으면 7일짜리 안눌렀으면 3분짜리 유효기간을 가지고 있습니다.
   if (remember) opts.expiresIn = config.jwt.expiresInRemember // 6일
@@ -73,10 +74,16 @@ const getToken = async(t) => {
   // return vt
   console.log(diff)
   // 60초보다 클 경우 사용자 정보와 토큰이 없다는 결과를 주며 나옵니다.
-  if (diff > (vt.exp - vt.iat) / config.jwt.expiresInDiv) return { user: vt, token: null }
+  // if (diff > (vt.exp - vt.iat) / config.jwt.expiresInDiv) return { user: vt, token: null }
+  //
+  // // 그렇지 않을 경우 기존 정보로 다시 토큰을 만듭니다.
+  // const nt = await signToken(vt.id, vt.lv, vt.name, vt.rmb)
+  // vt = await verifyToken(nt)
+  // return { user: vt, token: nt }
+  const expSec = (vt.exp - vt.iat)
+  if (diff > expSec / config.jwt.expiresInDiv) return { user: vt, token: null }
 
-  // 그렇지 않을 경우 기존 정보로 다시 토큰을 만듭니다.
-  const nt = await signToken(vt.id, vt.lv, vt.name, vt.rmb)
+  const nt = await signToken(vt.id, vt.lv, vt.name, expSec)
   vt = await verifyToken(nt)
   return { user: vt, token: nt }
 };

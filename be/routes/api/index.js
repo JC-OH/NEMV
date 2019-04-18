@@ -12,6 +12,9 @@ router.use('/site', require('./site'));
 // 회원가입 API 레지스터를 등록해줍니다.
 router.use('/register', require('./register'));
 
+// 이제 “아무나” 게시판 정보를 가져올 수 있습니다.
+router.use('/board', require('./board'));
+
 router.all('*', function(req, res, next) {
   // 토큰 검사
   // authorization: '[object Object]',
@@ -60,7 +63,7 @@ router.all('*', function(req, res, next) {
       })
       .catch(e => res.send({ success: false, msg: e.message }))
 });
-router.use('/page', require('./page'))
+router.use('/page', require('./page'));
 router.use('/test', require('./test'));
 router.use('/user', require('./user'));
 router.use('/crud', require('./crud'));

@@ -8,14 +8,24 @@ import Pages from './views/Pages.vue'
 
 const pageCheck = (to, from, next) => {
     //Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') }, { headers: { Authorization: localStorage.getItem('token') } })
-    Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') })
+    // Vue.prototype.$axios.post(`${Vue.prototype.$apiRootPath}page`, { name: to.path.replace('/', '') })
+    //   .then((res) => {
+    //     if (!res.data.success) throw new Error(res.data.msg)
+    //     next()
+    //   })
+    //   .catch((err) => {
+    //     next(`/block/${err.message}`)
+    //   });
+    // 기존 페이지 경로 저장시 /를 빼고 하는 것이 맘에 안들어서 그냥 전체로 저장합니다.
+    Vue.prototype.$axios.post('page', { name: to.path })
       .then((res) => {
-        if (!res.data.success) throw new Error(res.data.msg)
+        if (!res.data.success) throw new Error(r.data.msg)
         next()
       })
       .catch((err) => {
-        next(`/block/${err.message}`)
-      });
+        // next(`/block/${e.message}`)
+        next(`/block/${err.message.replace(/\//gi, ' ')}`)
+      })
 }
 
 Vue.use(Router)
@@ -24,10 +34,16 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   component: Home
+    // },
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'boardAnyone',
+      component: () => import('./views/board/Anyone.vue'),
+      //beforeEnter: pageCheck
     },
     {
       path: '/about',
