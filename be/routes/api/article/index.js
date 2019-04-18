@@ -80,21 +80,54 @@ router.delete('/:_id', (req, res, next) => {
     })
 })
 // [게시물 목록 읽기]
+// router.get('/list/:_board', (req, res, next) => {
+//   const _board = req.params._board
+//
+//   const f = {}
+//   if (_board) f._board = _board
+//   // .select(‘-content’) 으로 내용을 제거한 결과를 보냅니다.
+//   Article.find(f).select('-content').populate('_user', '-pwd')
+//     .then(rs => {
+//       res.send({ success: true, ds: rs, token: req.token })
+//     })
+//     .catch(e => {
+//       res.send({ success: false, msg: e.message })
+//     })
+// })
 router.get('/list/:_board', (req, res, next) => {
   const _board = req.params._board
+  let { search, sort, order, skip, limit } = req.query
+  if (!(sort && order && skip && limit)) return res.send({ success: false, msg: '잘못된 요청입니다' })
+  if (!search) search = ''
+  order = parseInt(order)
+  limit = parseInt(limit)
+  skip = parseInt(skip)
+  const s = {}
+  s[sort] = order
 
   const f = {}
   if (_board) f._board = _board
-  // .select(‘-content’) 으로 내용을 제거한 결과를 보냅니다.
-  Article.find(f).select('-content').populate('_user', '-pwd')
+  let total = 0
+
+  Article.countDocuments(f)
+    .where('title').regex(search)
+    .then(r => {
+      total = r
+      return Article.find(f)
+        .where('title').regex(search)
+        .sort(s)
+        .skip(skip)
+        .limit(limit)
+        .select('-content')
+        .populate('_user', '-pwd')
+    })
     .then(rs => {
-      res.send({ success: true, ds: rs, token: req.token })
+      res.send({ success: true, t: total, ds: rs, token: req.token })
     })
     .catch(e => {
       res.send({ success: false, msg: e.message })
     })
 })
-
 // [읽기]
 router.get('/:_board', (req, res, next) => {
   const _board = req.params._board

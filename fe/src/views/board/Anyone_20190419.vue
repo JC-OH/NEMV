@@ -24,36 +24,25 @@
       <v-flex xs12 sm6 md4 v-for="article in articles" :key="article._id">
         {{article}}
       </v-flex>
-      <v-flex xs12 sm4 offset-sm8>
-      <v-text-field
-        label="검색"
-        append-icon="search"
-        v-model="params.search"
-        clearable
-      ></v-text-field>
-    </v-flex>
-    <v-flex xs12>
-      <v-data-table
-        :headers="headers"
-        :items="articles"
-        :total-items="pagination.totalItems"
-        :pagination.sync="pagination"
-        rows-per-page-text=""
-        :loading="loading"
-        class="text-no-wrap"
-        disable-initial-sort>
-        <template slot="items" slot-scope="props">
-          <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
-          <td :class="headers[1].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
-          <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
-          <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
-          <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
-        </template>
-      </v-data-table>
-      <div class="text-xs-center pt-2">
-        <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
-      </div>
-    </v-flex>
+      <v-flex xs12>
+       <v-data-table
+         :headers="headers"
+         :items="articles"
+         :loading="loading">
+         <template slot="items" slot-scope="props">
+           <td :class="headers[0].class">{{ id2date(props.item._id)}}</td>
+           <!-- 글 제목에 링크를 걸어서 다이얼로그를 띄우게 했습니다. -->
+           <!-- 게시물을 그대로 read(atc)넘깁니다. -->
+           <td :class="headers[1].class"><a @click="read(props.item)"> {{ props.item.title }}</a></td>
+           <td :class="headers[2].class">{{ props.item._user ? props.item._user.id : '손님' }}</td>
+           <td :class="headers[3].class">{{ props.item.cnt.view }}</td>
+           <td :class="headers[4].class">{{ props.item.cnt.like }}</td>
+
+
+
+         </template>
+       </v-data-table>
+     </v-flex>
     </v-layout>
 
     <v-btn
@@ -166,20 +155,10 @@ export default {
         { text: '추천', value: 'cnt.like', sortable: true }
       ],
       loading: false,
-      pagination: {},
       // dlMode(0: 읽기, 1: 쓰기, 2: 수정)로 다이얼로그를 재활용 했습니다.
       dlMode: 0, // 0: read, 1: write, 2: modify
       selArticle: {},
       ca: false,
-      params: {
-        draw: 0,
-        search: '',
-        skip: 0,
-        sort: '_id',
-        order: 0,
-        limit: 1
-      },
-      timeout: null,
       dialog: false,
       lvs: [0, 1, 2, 3],
       form: {
@@ -197,40 +176,6 @@ export default {
         color: 'error'
       }
     }
-  },
-  watch: {
-    pagination: {
-      handler() {
-        this.list()
-      },
-      deep: true
-    },
-    'params.search': {
-      handler() {
-        this.delay()
-        // this.list()
-      }
-    }
-  },
-  computed: {
-    setSkip () {
-      if (this.pagination.page <= 0) return 0
-      return (this.pagination.page - 1) * this.pagination.rowsPerPage
-    },
-    setSort () {
-      let sort = this.pagination.sortBy
-      if (!this.pagination.sortBy) sort = '_id'
-      return sort
-    },
-    setOrder () {
-      return this.pagination.descending ? -1 : 1
-    },
-    pages () {
-      if (this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      ) return 0
-      return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
-    },
   },
   mounted () {
     this.get()
@@ -290,21 +235,11 @@ export default {
     //       this.loading = false
     //     })
     // },
-
     list () {
       if (this.loading) return
-      if (!this.board._id) return
       this.loading = true
-      this.params.draw ++
-      this.params.skip = this.setSkip
-      this.params.limit = this.pagination.rowsPerPage
-      this.params.sort = this.setSort
-      this.params.order = this.setOrder
-
-      this.$axios.get(`article/list/${this.board._id}`, { params: this.params })
+      this.$axios.get(`article/list/${this.board._id}`)
         .then(({ data }) => {
-          if (!data.success) throw new Error(data.msg)
-          this.pagination.totalItems = data.t
           this.articles = data.ds
           this.loading = false
         })
@@ -358,12 +293,6 @@ export default {
          this.pop(e.message, 'error')
        })
    },
-   delay () {
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        this.list()
-      }, 1000)
-    },
     id2date (val) {
       if (!val) return '잘못된 시간 정보'
       return new Date(parseInt(val.substring(0, 8), 16) * 1000).toLocaleString()
