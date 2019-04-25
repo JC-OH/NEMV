@@ -45,6 +45,7 @@ export default new Router({
       component: () => import('./views/board/Anyone.vue'),
       beforeEnter: pageCheck
     },
+    
     {
       path: '/about',
       name: 'about',

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Board = require('../../../models/boards');
 const Article = require('../../../models/articles');
+const Comment = require('../../../models/comments');
 
 // [쓰기]
 router.post('/:_board', (req, res, next) => {
@@ -150,15 +151,38 @@ router.get('/:_board', (req, res, next) => {
 // [게시물 내용 읽기]
 router.get('/read/:_id', (req, res, next) => {
   const _id = req.params._id
+
+  // 기존 게시물 읽기 api에서 댓글과 같이 전송하기 위해 atc라는 변수를 하나 두고 댓글을 보태서 전송합니다.
+  let atc = {}
+
   // .select(‘content’) 로 게시물 하나의 내용만 읽어서 전송합니다.
   // findById() findOne() 의 차이는 findById(id) = findOne({ _id: id }) 입니다 그냥 편의를 위해 몽구스에서 만든 것이죠.
-  Article.findById(_id).select('content')
-    .then(r => {
-      res.send({ success: true, d: r, token: req.token })
-    })
-    .catch(e => {
-      res.send({ success: false, msg: e.message })
-    })
+  // Article.findById(_id).select('content')
+  //   .then(r => {
+  //     res.send({ success: true, d: r, token: req.token })
+  //   })
+  //   .catch(e => {
+  //     res.send({ success: false, msg: e.message })
+  //   })
+  // 게시물을 가져올때 lean()을 썼는데 받은 값을 변경하기 위함입니다(몽구스 객체에서 오브젝트 변수형으로 변경). 없을 경우 atc.xxx = xx 같은 변경은 되지 않습니다.
+  Article.findByIdAndUpdate(_id, { $inc: { 'cnt.view': 1 } }, { new: true }).lean()
+  .select('content cnt')
+  .then(r => {
+    if (!r) throw new Error('잘못된 게시판입니다')
+    atc = r
+    atc._comments = []
+    // 댓글을 찾을 때 해당 게시물 아이디로 찾고 사용자 정보를 같이 보내주기 위해 파퓰레이트 시켰습니다.(사용자 정보 중 패스워드 같은 것은 넣으면 안되니 id와 name만 선택하도록 했습니다.)
+    // _id로 소트한다는 것은 발생 일시로 정렬한다는 것이죠.
+    // limit(5)개로 임시로 넣어 둔 것입니다. 배열류 디비 조회는 항상 limit를 걸어 제한하는 것이 좋습니다. 만약 버그등으로 댓글이 10만개라면 백엔드서버 껏다 켜집니다.
+    return Comment.find({ _article: atc._id }).populate({ path: '_user', select: 'id name'}).sort({ _id: 1 }).limit(5)
+  })
+  .then(rs => {
+    if (rs) atc._comments = rs
+    res.send({ success: true, d: atc, token: req.token })
+  })
+  .catch(e => {
+    res.send({ success: false, msg: e.message })
+  })
 })
 
 router.all('*', require('../notFound'));
