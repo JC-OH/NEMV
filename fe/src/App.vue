@@ -119,13 +119,20 @@ export default {
          title: '끄적끄적',
          act: true,
          subItems: [
-           {
-             icon: 'home',
-             title: '아무나',
-             to: {
-               path: '/'
-             }
-           }
+           // {
+           //   icon: 'home',
+           //   title: '아무나',
+           //   to: {
+           //     path: '/'
+           //   }
+           // },
+           //  {
+           //    icon: 'home',
+           //    title: '지호',
+           //    to: {
+           //      path: '/board/지호'
+           //    }
+           //  }
          ]
        },
         {
@@ -202,7 +209,8 @@ export default {
     }
   },
   mounted () {
-    this.getSite()
+    this.getSite();
+    this.getBoards();
   },
   methods: {
     signOut () {
@@ -215,6 +223,20 @@ export default {
           this.siteTitle = r.data.site.title
           this.siteCopyright = r.data.site.copyright
           this.siteDark = r.data.site.dark
+        })
+        .catch(e => console.error(e.message))
+    },
+    getBoards () {
+      this.$axios.get('/board/list')
+        .then(({ data }) => {
+          data.ds.forEach(v => {
+            this.items[0].subItems.push({
+              title: v.name,
+              to: {
+                path: `/board/${v.name}`
+              }
+            })
+          })
         })
         .catch(e => console.error(e.message))
     }

@@ -2,7 +2,19 @@ const express = require('express');
 const router = express.Router();
 const Board = require('../../../models/boards');
 
-router.get('/:name', (req, res, next) => {
+
+router.get('/list', (req, res, next) => {
+
+  Board.find().sort({ lv: -1 })
+    .then(rs => {
+      res.send({ success: true, ds: rs, token: req.token })
+    })
+    .catch(e => {
+      res.send({ success: false, msg: e.message })
+    })
+})
+
+router.get('/read/:name', (req, res, next) => {
   const name = req.params.name;
 
 

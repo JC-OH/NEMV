@@ -45,7 +45,15 @@ export default new Router({
       component: () => import('./views/board/Anyone.vue'),
       beforeEnter: pageCheck
     },
-    
+    // board path를 동적으로 할당했습니다.
+    // 파일명이 index.vue이기 때문에 import(‘./views/board’) 로 줄일 수 있습니다.
+    {
+      path: '/board/:name',
+      name: 'board',
+      component: () => import('./views/board/Index.vue'),
+      beforeEnter: pageCheck
+    },
+
     {
       path: '/about',
       name: 'about',
